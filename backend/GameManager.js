@@ -5,7 +5,7 @@ const { Game } = require("./Game");
 class GameManager {
     constructor() {
         this.games = [];
-        this.pendingUser = null;
+        this.pendingUser =null;  //[['1',socket],['2',socket]]
         this.users = [];
     }
 
@@ -26,9 +26,9 @@ class GameManager {
             if (message.type === INIT_GAME) {
                 if (this.pendingUser) {
                     console.log("pendingUser");
-                    const game = new Game(this.pendingUser, socket ,message.room,message.selectedIndex,message.state);
+                    const game = new Game(this.pendingUser, socket ,message.room,message.mode,message.state);
                     this.games.push(game);
-                    this.pendingUser = null;
+                    
                 } else {
                     console.log("otherUser");
                     this.pendingUser = socket;

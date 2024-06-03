@@ -17,7 +17,8 @@ class Game {
         payload: {
           room:room,
           color: "white",
-          turns:0
+          turns:0,
+          mode:mode
 
         },
       })
@@ -28,7 +29,8 @@ class Game {
         payload: {
           room:room,
           color: "black",
-          turns:0
+          turns:0,
+          mode:mode
         },
       })
     );

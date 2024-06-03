@@ -8,6 +8,7 @@ function starto() {
     document.getElementById("code").innerText = getRandomInt(10000, 99999);
   } else if (start == 1) {
     document.getElementById("joining_code").style.display = "none";
+
     document.getElementById("play with random").style.display = "none";
     document.getElementById("play with friend").style.display = "none";
   } else {
@@ -136,6 +137,29 @@ function initSocket() {
       if (data.type == "init_game") {
         document.getElementById("color").innerText = data.payload.color;
         document.getElementById("code").innerText = data.payload.room;
+        document.getElementsByClassName('modeboxTitle')[0].innerText="Multiplayer Mode"
+
+        switch(data.payload.mode){
+          case 0:
+            document.getElementById('mode').innerText="Fairy Chess";
+            break;
+          case 1:
+            document.getElementById('mode').innerText="Default";
+            break;
+          case 2:
+            document.getElementById('mode').innerText="Random 8x8";
+            break;
+          case 3:
+            document.getElementById('mode').innerText="Random 16x16";
+            break;
+          case 4:
+            document.getElementById('mode').innerText="Elk Chess";
+            break;
+          case 5:
+            document.getElementById('mode').innerText="Chameleon Chess";
+            break;
+        }
+        document.getElementById('modeSelect').style.display="none";
         
         personal_color=data.payload.color;
         players=2;
@@ -246,7 +270,7 @@ function handleClick(mx, my, button) {
           }else{
             document.getElementById("turn").innerText="Your turn"
   
-          }
+          } 
           
         }
         chessBoard.draw();

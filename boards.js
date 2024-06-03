@@ -210,14 +210,14 @@ function selectMode(){
     modesDict[document.getElementById("modeSelect").value]();
     start=0;
     // starto();
-    ws.send(
-        JSON.stringify({
-          type: "init_game",
-          mode: document.getElementById("modeSelect").selectedIndex,
-          roomid: document.getElementById("roomreq").value,
-          state:encodeState()
-        })
-      );
+    // ws.send(
+    //     JSON.stringify({
+    //       type: "init_game",
+    //       mode: document.getElementById("modeSelect").selectedIndex,
+    //       roomid: document.getElementById("roomreq").value,
+    //     //   state:encodeState()
+    //     })
+    //   );
     // ws.send(JSON.stringify({state: encodeState(), type:"updateData"}));
     // ws.send(JSON.stringify({type: "turnUpdate", turns: turns}));
     // ws.send(JSON.stringify({type: "selectedChange",room: document.getElementById('code').innerText, selectedIndex: document.getElementById("modeSelect").selectedIndex}));
