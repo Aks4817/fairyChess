@@ -61,7 +61,9 @@
             width: 100%;
             height: 100%;
         }
-        #tipP{
+        .t{
+            margin: 1vh;
+            margin-left: 5%;
             width: 90%;
         }
         .modeBox{
@@ -116,7 +118,7 @@
         <img id="tipImg" src="assets/pieces/elk.png">
         <div id="tipText">
             <h1 id="tipTitle">Elk</h1>
-            <p id="tipP">Moves to spaces in the perimeter of the 5x5 square around it.</p>
+            <p class="t" id="tipP">Moves to spaces in the perimeter of the 5x5 square around it.</p>
         </div>
     </div>
     <div class="box modeBox">   
@@ -130,8 +132,8 @@
              -->
         <br>
         <br>
-        <div>Current Room Code : <span id="code"></span></div>
-        <br><div id="joining_code">
+        <div class="t">Current Room Code : <span id="code"></span></div>
+        <br ><div class="t" id="joining_code">
             <label id="label_id">Enter room Code to join :</label>
             <input type="number" id="roomreq"></input>
         <div id="err" style="color: red;"></div></div>
@@ -139,9 +141,11 @@
         <div id="color"></div>
         <div id="turn"></div>
         <br>
-        <button id="play with random">Play With random </button>
-        <button id="Start Room">Start Room </button>
-        <button id="Join Room">Join Room </button>
+        <div class="t">
+            <button id="play with random">Play With random </button>
+            <button id="Start Room">Start Room </button>
+            <button id="Join Room">Join Room </button>
+        </div>
     </div>
 </body>
 
