@@ -1,5 +1,4 @@
 // const WebSocket = require("ws");
-const { GAME_OVER, INIT_GAME, MOVE } = require("./messages");
 
 class Game {
   constructor(player1, player2,room,mode,state) {
@@ -13,24 +12,25 @@ class Game {
 
     this.player1.send(
       JSON.stringify({
-        type: INIT_GAME,
+        type: "init_game",
         payload: {
           room:room,
           color: "white",
           turns:0,
-          mode:mode
-
+          mode:mode,
+          state:state
         },
       })
     );
     this.player2.send(
       JSON.stringify({
-        type: INIT_GAME,
+        type: "init_game",
         payload: {
           room:room,
           color: "black",
           turns:0,
-          mode:mode
+          mode:mode,
+          state:state
         },
       })
     );

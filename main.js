@@ -9,8 +9,9 @@ function starto() {
   } else if (start == 1) {
     document.getElementById("joining_code").style.display = "none";
 
+    document.getElementById("Join Room").style.display = "none";
+    document.getElementById("Start Room").style.display = "none";
     document.getElementById("play with random").style.display = "none";
-    document.getElementById("play with friend").style.display = "none";
   } else {
   }
 }
@@ -20,7 +21,7 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-document.body.appendChild(c);
+// document.body.appendChild(c);
 
 var scale = 2.0;
 
@@ -78,12 +79,12 @@ document
         type: "init_game",
         mode: document.getElementById("modeSelect").selectedIndex,
         room: document.getElementById("code").innerText,
-        // state:encodeState()
+        state:encodeState()
       })
     );
   });
 document
-  .getElementById("play with friend")
+  .getElementById("Join Room")
   .addEventListener("mousedown", () => {
     console.log("hurray");
     if (document.getElementById("roomreq").value === "") {
@@ -93,42 +94,63 @@ document
       starto();
       ws.send(
         JSON.stringify({
-          type: "init_game",
+          type: "Join Room",
           mode: document.getElementById("modeSelect").selectedIndex,
-          roomid: document.getElementById("roomreq").value,
-          //   state:encodeState()
+          room: document.getElementById("roomreq").value,
+            state:encodeState()
         })
       );
     }
   });
-var chessBoard;
+  document
+  .getElementById("Start Room")
+  .addEventListener("mousedown", () => {
+    console.log("hurray");
+   
+      start = 1;
+      starto();
+      ws.send(
+        JSON.stringify({
+          type: "Start Room",
+          mode: document.getElementById("modeSelect").selectedIndex,
+          room: document.getElementById("code").innerText,
+            state:encodeState()
+        })
+      );
+    
+  });
+  var chessBoard;
 
-var ws;
-
-function initSocket() {
-  ws = new WebSocket(`ws://localhost:8080`);
-
-  ws.onopen = (e) => {
-    // ws.send(JSON.stringify({type: "init_game"}));
-    loadModes();
-  };
-
-  ws.onmessage = (e) => {
-    try {
-      console.log(e);
-      var data = JSON.parse(e.data);
-
-      if (data.type == "update") {
-        ws.send(JSON.stringify({ state: encodeState(), type: "updateData" }));
-        // ws.send(JSON.stringify({ type: "turnUpdate", turns: turns }));
-      }
-      if (data.type == "updateData") {
-        loadState(data.state);
-        if(document.getElementById("turn").innerText=="Your turn"){
-          document.getElementById("turn").innerText="Opponent's turn"
-        }else{
-          document.getElementById("turn").innerText="Your turn"
-
+  var ws;
+  
+  function initSocket() {
+    ws = new WebSocket(`ws://localhost:8080`);
+    
+    ws.onopen = (e) => {
+      // ws.send(JSON.stringify({type: "init_game"}));
+      loadModes();
+    };
+    
+    ws.onmessage = (e) => {
+      try {
+        // console.log(e);
+        var data = JSON.parse(e.data);
+        
+        if (data.type == "update") {
+          ws.send(JSON.stringify({ state: encodeState(), type: "updateData" }));
+          // ws.send(JSON.stringify({ type: "turnUpdate", turns: turns }));
+        }
+        if (data.type == "Wrong Room") {
+          document.getElementById("err").textContent = "Enter a valid room id";
+          
+        }
+        if (data.type == "updateData") {
+          loadState(data.state);
+          if(document.getElementById("turn").innerText=="Your turn"){
+            document.getElementById("turn").innerText="Opponent's turn"
+          }else{
+            document.getElementById("turn").innerText="Your turn"
+            
         }
       }
       if (data.type == "turnUpdate") {
@@ -138,7 +160,11 @@ function initSocket() {
         document.getElementById("color").innerText = data.payload.color;
         document.getElementById("code").innerText = data.payload.room;
         document.getElementsByClassName('modeboxTitle')[0].innerText="Multiplayer Mode"
-
+        document.getElementById("modeSelect").selectedIndex=data.payload.mode;
+        selectMode();
+        // console.log(data.payload.state)
+        loadState(data.payload.state)
+        
         switch(data.payload.mode){
           case 0:
             document.getElementById('mode').innerText="Fairy Chess";
@@ -158,8 +184,8 @@ function initSocket() {
           case 5:
             document.getElementById('mode').innerText="Chameleon Chess";
             break;
-        }
-        document.getElementById('modeSelect').style.display="none";
+          }
+          document.getElementById('modeSelect').style.display="none";
         
         personal_color=data.payload.color;
         players=2;
@@ -170,7 +196,6 @@ function initSocket() {
           document.getElementById("turn").innerText="Opponent's turn"
 
         }
-        // loadBoard(data.payload.state)
       }
       if (data.type == "selectedChange") {
         // document.getElementById("modeSelect").selectedIndex = data.selectedIndex;
