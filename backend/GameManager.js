@@ -110,14 +110,14 @@ class GameManager {
           game.makeMoves(socket, message.state);
         }
       }
-      if (message.type === "selectedChange") {
+      if (message.type === "gameOver") {
         const game = this.games.find(
-          (game) =>
-            game.code === message.room ||
-            game.player1 === socket ||
-            game.player2 === socket
-        );
-        game.changemode(socket, message.selectedIndex);
+            (game) => game.player1 === socket || game.player2 === socket
+          );
+          if (game) {
+            console.log("inside makemove");
+            game.gameOver(message.winner);
+          }
       }
     });
   }

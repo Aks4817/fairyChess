@@ -2,6 +2,7 @@ var c = document.createElement("canvas");
 var start = 0;
 var players = 1;
 var personal_color='';
+Gamerunning=0;
 starto();
 function starto() {
   if (start == 0) {
@@ -157,6 +158,11 @@ document
       if (data.type == "turnUpdate") {
         turns = turns + 1;
       }
+      if(data.type=="gameOver"){
+        var winner=data.winner;
+        document.getElementById("turn").innerText = `${winner} wins! ${winner=="white"?"white":"black"} king was captured`;
+
+      }
       if (data.type == "init_game") {
         document.getElementById("color").innerText = data.payload.color;
         document.getElementById("code").innerText = data.payload.room;
@@ -231,6 +237,7 @@ var turns = 0;
 var moved = false;
 
 function handleClick(mx, my, button) {
+
   console.log(turns);
   if (button == 0) {
     if (
@@ -239,6 +246,9 @@ function handleClick(mx, my, button) {
       my >= 0 &&
       my < chessBoard.board.length
     ) {
+      if(Gamerunning===1){
+        return;
+      }
       if (!pieceSelected) {
         pieceSelected = chessBoard.get(mx, my);
         if (pieceSelected == 0) {
@@ -281,23 +291,32 @@ function handleClick(mx, my, button) {
             }
           }
         }
-        /*
-        if(!moved && chessBoard.get(mx, my)){
-          if(pieceSelected != chessBoard.get(mx, my)){
-            pieceSelected = undefined;
-            handleClick(mx, my, button);
-          }
-        }*/
         pieceSelected = undefined;
         if(moved){
           ws.send(JSON.stringify({ type: "update", state: encodeState() }));
-          if(document.getElementById("turn").innerText=="Your turn"){
-            document.getElementById("turn").innerText="Opponent's turn"
-          }else{
-            document.getElementById("turn").innerText="Your turn"
-  
-          } 
-          
+          const gameOverStatus = isGameOver();
+          if (gameOverStatus === 1) {
+            Gamerunning=0;
+            document.getElementById("turn").innerText = "Black wins! White king was captured.";
+            ws.send(JSON.stringify({
+              type:"gameOver",
+              winner:"Black"
+            }))
+
+          } else if (gameOverStatus === 2) {
+            Gamerunning=0;
+            document.getElementById("turn").innerText = "White wins! Black king was captured.";
+            ws.send(JSON.stringify({
+              type:"gameOver",
+              winner:"White"
+            }))
+          } else {
+            if(document.getElementById("turn").innerText=="Your turn"){
+              document.getElementById("turn").innerText="Opponent's turn"
+            }else{
+              document.getElementById("turn").innerText="Your turn"
+            }
+          }
         }
         chessBoard.draw();
       }
@@ -308,6 +327,8 @@ function handleClick(mx, my, button) {
     }
   }
 }
+
+
 
 function Board(xSize, ySize) {
   this.board = [];
@@ -491,6 +512,34 @@ function loadBoard(b) {
   chessBoard.render = undefined;
   chessBoard.draw();
 }
+
+function isGameOver() {
+  let whiteKingPresent = false;
+  let blackKingPresent = false;
+  
+  // Traverse the board to find both kings
+  for (let i = 0; i < chessBoard.board.length; i++) {
+    for (let j = 0; j < chessBoard.board[i].length; j++) {
+      const piece = chessBoard.board[i][j];
+      if (piece && piece.piece.name === 'King') {
+        if (piece.piece.color === 'w') {
+          whiteKingPresent = true;
+        } else if (piece.piece.color === 'b') {
+          blackKingPresent = true;
+        }
+      }
+    }
+  }
+
+  if (!whiteKingPresent) {
+    return 1; // White king is not on the board
+  } else if (!blackKingPresent) {
+    return 2; // Black king is not on the board
+  } else {
+    return 0; // Both kings are on the board
+  }
+}
+
 
 function encodeState() {
   var state = [];

@@ -62,6 +62,20 @@ class Game {
   //     selectedIndex:this.mode,
   //   }))
   // }
+  gameOver(winner){
+    try{
+      this.player1.send(JSON.stringify({
+        type:"gameOver",
+        winner:winner
+      }))
+      this.player2.send(JSON.stringify({
+        type:"gameOver",
+        winner:winner
+      }))
+    }catch(e){
+      console.log(e)
+    }
+  }
   makeMoves(socket, state) {
     // Validate the type of move using zod
 
@@ -118,6 +132,8 @@ class Game {
     //     }));
     // }
   }
+
+  
 }
 
 module.exports = { Game };
