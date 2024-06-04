@@ -126,7 +126,7 @@ document
   var ws;
   
   function initSocket() {
-    ws = new WebSocket(`ws://localhost:8080`);
+    ws = new WebSocket(`wss://aks4817-chess.glitch.me/`);
     
     ws.onopen = (e) => {
       // ws.send(JSON.stringify({type: "init_game"}));
